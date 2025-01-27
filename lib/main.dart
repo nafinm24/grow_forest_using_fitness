@@ -1,19 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const MyApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      title: "Grow Forest with Fitness",
+      theme: ThemeData(),
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(
-          child: Text('Hello World!'),
-        ),
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 200,
+              width: 200,
+              child: Lottie.asset('assets/walking.json'),
+            ),
+            Text("Number of Steps: "),
+          ],
+        )),
       ),
     );
   }
