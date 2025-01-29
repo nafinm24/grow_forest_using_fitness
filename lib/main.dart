@@ -14,19 +14,103 @@ class MyApp extends StatelessWidget {
       title: "Grow Forest with Fitness",
       theme: ThemeData(),
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Center(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      home: const Walking(),
+    );
+  }
+}
+
+class Walking extends StatefulWidget {
+  const Walking({super.key});
+
+  @override
+  State<Walking> createState() => _WalkingState();
+}
+
+class _WalkingState extends State<Walking> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _walkingAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 20),
+    );
+
+    _walkingAnimation = Tween<double>(begin: -150, end: 350).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.linear,
+      ),
+    );
+
+    _animationController.repeat();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            SizedBox(
-              height: 200,
-              width: 200,
-              child: Lottie.asset('assets/walking.json'),
+            Positioned(
+              top: 30,
+              child: Lottie.asset(
+                'assets/tree.json',
+                width: 330,
+                height: 330,
+                fit: BoxFit.cover,
+              ),
             ),
-            Text("Number of Steps: "),
+            AnimatedBuilder(
+              animation: _walkingAnimation,
+              builder: (context, child) {
+                return Positioned(
+                  left: _walkingAnimation.value,
+                  bottom: 350,
+                  child: child!,
+                );
+              },
+              child: Lottie.asset(
+                'assets/walking.json',
+                width: 150,
+                height: 150,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Positioned(
+              bottom: 300,
+              child: const Text(
+                "Steps Count:",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'JetBrains',
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 220,
+              child: const Text(
+                "10960",
+                style: TextStyle(
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'JetBrains',
+                ),
+              ),
+            ),
           ],
-        )),
+        ),
       ),
     );
   }

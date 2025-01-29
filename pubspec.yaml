@@ -18,5 +18,9 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: JetBrains
+      fonts:
+        - asset: fonts/JetBrainsMono-Bold.ttf
   assets:
     - assets/
