@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pedometer/pedometer.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,32 +28,60 @@ class Walking extends StatefulWidget {
   State<Walking> createState() => _WalkingState();
 }
 
-class _WalkingState extends State<Walking> with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
+class _WalkingState extends State<Walking> with TickerProviderStateMixin {
+  late AnimationController _walkingController;
   late Animation<double> _walkingAnimation;
+  late AnimationController _treeController;
+
+  int _stepCount = 0;
+  final int _totalSteps = 10000;
 
   @override
   void initState() {
     super.initState();
 
-    _animationController = AnimationController(
+    _walkingController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 20),
     );
 
     _walkingAnimation = Tween<double>(begin: -150, end: 350).animate(
       CurvedAnimation(
-        parent: _animationController,
+        parent: _walkingController,
         curve: Curves.linear,
       ),
     );
 
-    _animationController.repeat();
+    _walkingController.repeat();
+
+    _treeController = AnimationController(vsync: this);
+
+    _initPedoMeter();
+  }
+
+  Future<void> _initPedoMeter() async {
+    Pedometer.stepCountStream.listen((StepCount stepCount) {
+      if (!mounted) return;
+      setState(() {
+        _stepCount = stepCount.steps;
+
+        double progress = (_stepCount / _totalSteps).clamp(0.0, 1.0);
+        _treeController.value = progress;
+        if (kDebugMode) {
+          print('Step Count: $_stepCount, Progress: $progress');
+        }
+      });
+    }).onError((error) {
+      if (kDebugMode) {
+        print('Pedometer Error: $error');
+      }
+    });
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _walkingController.dispose();
+    _treeController.dispose();
     super.dispose();
   }
 
@@ -69,6 +99,12 @@ class _WalkingState extends State<Walking> with SingleTickerProviderStateMixin {
                 width: 330,
                 height: 330,
                 fit: BoxFit.cover,
+                controller: _treeController,
+                onLoaded: (composition) {
+                  setState(() {
+                    _treeController.duration = composition.duration;
+                  });
+                },
               ),
             ),
             AnimatedBuilder(
@@ -100,8 +136,8 @@ class _WalkingState extends State<Walking> with SingleTickerProviderStateMixin {
             ),
             Positioned(
               bottom: 220,
-              child: const Text(
-                "10960",
+              child: Text(
+                "$_stepCount",
                 style: TextStyle(
                   fontSize: 50,
                   fontWeight: FontWeight.bold,
