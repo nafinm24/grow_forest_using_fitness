@@ -39,7 +39,7 @@ class _WalkingState extends State<Walking> with TickerProviderStateMixin {
 
   int _stepTree = 0;
 
-  final int _optimalSteps = 300;
+  final int _optimalSteps = 250;
 
   @override
   void initState() {
@@ -124,17 +124,19 @@ class _WalkingState extends State<Walking> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Center(
         child: Stack(
           alignment: Alignment.center,
           children: [
             Positioned(
-              top: 50,
+              top: screenHeight * 0.08,
               child: Lottie.asset(
                 'assets/tree.json',
-                width: 330,
-                height: 330,
+                width: screenWidth * 0.7,
+                height: screenHeight * 0.3,
                 fit: BoxFit.cover,
                 controller: _treeController,
                 onLoaded: (composition) {
@@ -149,19 +151,19 @@ class _WalkingState extends State<Walking> with TickerProviderStateMixin {
               builder: (context, child) {
                 return Positioned(
                   left: _walkingAnimation.value,
-                  bottom: 335,
+                  bottom: screenHeight * 0.46,
                   child: child!,
                 );
               },
               child: Lottie.asset(
                 'assets/walking.json',
-                width: 150,
-                height: 150,
+                width: screenWidth * 0.35,
+                height: screenHeight * 0.15,
                 fit: BoxFit.cover,
               ),
             ),
             Positioned(
-              bottom: 270,
+              bottom: screenHeight * 0.33,
               child: const Text(
                 "Steps Count:",
                 style: TextStyle(
@@ -172,7 +174,7 @@ class _WalkingState extends State<Walking> with TickerProviderStateMixin {
               ),
             ),
             Positioned(
-              bottom: 190,
+              bottom: screenHeight * 0.20,
               child: Text(
                 _steps,
                 style: TextStyle(
