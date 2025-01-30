@@ -39,7 +39,7 @@ class _WalkingState extends State<Walking> with TickerProviderStateMixin {
 
   int _stepTree = 0;
 
-  final int _optimalSteps = 10000;
+  final int _optimalSteps = 300;
 
   @override
   void initState() {
@@ -76,8 +76,12 @@ class _WalkingState extends State<Walking> with TickerProviderStateMixin {
     setState(() {
       _steps = event.steps.toString();
       _stepTree = int.parse(_steps);
-      print(_steps);
-      print(_stepTree);
+      print('Steps calculated by pedometer: $_steps');
+      print('Steps converted to integer: $_stepTree');
+
+      double progress = (_stepTree / _optimalSteps).clamp(0.0, 1.0);
+      _treeController.animateTo(progress,
+          duration: const Duration(seconds: 20));
     });
   }
 
@@ -136,22 +140,6 @@ class _WalkingState extends State<Walking> with TickerProviderStateMixin {
                 onLoaded: (composition) {
                   setState(() {
                     _treeController.duration = composition.duration;
-                    var start = 0.0;
-                    var stop = 1.0;
-
-                    // if (_stepTree > _optimalSteps) {
-                    //   start = 0.0;
-                    //   stop = 1.0;
-                    // } else {
-                    //   start = 0.0;
-                    //   stop = (_stepTree / _optimalSteps);
-                    // }
-                    _treeController.repeat(
-                      min: start,
-                      max: stop,
-                      reverse: true,
-                      period: _treeController.duration! * (stop - start),
-                    );
                   });
                 },
               ),
@@ -161,7 +149,7 @@ class _WalkingState extends State<Walking> with TickerProviderStateMixin {
               builder: (context, child) {
                 return Positioned(
                   left: _walkingAnimation.value,
-                  bottom: 390,
+                  bottom: 335,
                   child: child!,
                 );
               },
@@ -173,7 +161,7 @@ class _WalkingState extends State<Walking> with TickerProviderStateMixin {
               ),
             ),
             Positioned(
-              bottom: 300,
+              bottom: 270,
               child: const Text(
                 "Steps Count:",
                 style: TextStyle(
@@ -184,7 +172,7 @@ class _WalkingState extends State<Walking> with TickerProviderStateMixin {
               ),
             ),
             Positioned(
-              bottom: 220,
+              bottom: 190,
               child: Text(
                 _steps,
                 style: TextStyle(
