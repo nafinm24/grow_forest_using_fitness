@@ -3,8 +3,12 @@ import 'package:lottie/lottie.dart';
 import 'package:pedometer/pedometer.dart';
 import 'dart:async';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(const MyApp());
 }
 
